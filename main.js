@@ -12,6 +12,8 @@ var paddle1Y;
 var  playerscore =0;
 var audio1;
 var pcscore =0;
+var noseY="";
+var noseX="";
 //ball x and y and speedx speed y and radius
 var ball = {
     x:350/2,
@@ -23,8 +25,19 @@ var ball = {
 
 function setup(){
   var canvas =  createCanvas(700,600);
-}
 
+  instializeInSetup(paddle1);
+
+	video= createCapture(VIDEO);
+	video.size(800,400);
+	video.parent('game_console');
+
+  poseNet= ml5.poseNet(video, modelLoaded);
+	poseNet.on('pose',gotPoses);
+}
+function modelLoaded(){
+	console.log('Model Loaded!');
+}
 
 function draw(){
 
@@ -37,6 +50,13 @@ function draw(){
  fill("black");
  stroke("black");
  rect(0,0,20,700);
+ 
+ if(noseY < 150){
+  paddle1Y = paddle1Y - 1;
+}
+if(noseY > 150){
+  paddle1Y = paddle1Y + 1;
+}
  
    //funtion paddleInCanvas call 
    paddleInCanvas();
@@ -155,10 +175,10 @@ function models(){
 
 //this function help to not go te paddle out of canvas
 function paddleInCanvas(){
-  if(mouseY+paddle1Height > height){
+  if(noseY > height){
     mouseY=height-paddle1Height;
   }
-  if(mouseY < 0){
+  if(noseY < 0){
     mouseY =0;
   }  
 }
